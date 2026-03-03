@@ -75,4 +75,57 @@ public class ConfigManager {
     public String getAppKey() {
         return prefs.getString("app_key", "");
     }
+
+    // ==========================================
+    // API 配置
+    // ==========================================
+    
+    // API Key
+    public void saveApiKey(String key) {
+        prefs.edit().putString("api_key", key).apply();
+    }
+
+    public String getApiKey() {
+        return prefs.getString("api_key", "");
+    }
+
+    // Product Key
+    public void saveProductKey(String key) {
+        prefs.edit().putString("product_key", key).apply();
+    }
+
+    public String getProductKey() {
+        return prefs.getString("product_key", "");
+    }
+
+    // ==========================================
+    // 设备 License 信息
+    // ==========================================
+    
+    // 设备ID (注册后获取)
+    public void saveDeviceId(String id) {
+        prefs.edit().putString("device_id", id).apply();
+    }
+
+    public String getDeviceId() {
+        return prefs.getString("device_id", "");
+    }
+
+    // 设备密钥 (注册后获取)
+    public void saveDeviceSecret(String secret) {
+        prefs.edit().putString("device_secret", secret).apply();
+    }
+
+    public String getDeviceSecret() {
+        return prefs.getString("device_secret", "");
+    }
+
+    // License 激活状态
+    public void saveLicenseStatus(String status) {
+        prefs.edit().putString("license_status", status).apply();
+    }
+
+    public String getLicenseStatus() {
+        return prefs.getString("license_status", "");
+    }
 }

@@ -18,13 +18,33 @@
             android:textColor="#00E5FF"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="8dp" />
+
+        <!-- 设备状态 -->
+        <TextView
+            android:id="@+id/tv_device_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备状态: 未注册"
+            android:textColor="#4DFFFFFF"
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 设备标识 -->
+        <TextView
+            android:id="@+id/tv_device_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备标识: 获取中..."
+            android:textColor="#4DFFFFFF"
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp" />
 
         <!-- 智能体 ID -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="智能体 ID"
+            android:text="智能体 ID (AgentCode)"
             android:textColor="#B3FFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="8dp" />
@@ -41,11 +61,73 @@
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="24dp" />
 
-        <!-- 项目 ID -->
+        <!-- API 配置 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AppId (License申请后获取)"
+            android:text="API 配置 (可选)"
+            android:textColor="#00E5FF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- API Key -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="API Key"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/et_api_key"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="从阿里云eAgent平台获取"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Product Key -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product Key"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/et_product_key"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="从阿里云eAgent平台获取"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- License 配置 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="License 配置 (申请后填入)"
+            android:textColor="#00E5FF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- AppId -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AppId"
             android:textColor="#B3FFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="8dp" />
@@ -55,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/edit_text_bg"
-            android:hint="请输入 AppId"
+            android:hint="从阿里云eAgent平台申请"
             android:textColor="#FFFFFF"
             android:textColorHint="#4DFFFFFF"
             android:textSize="16sp"
@@ -66,7 +148,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设备序列号 SN (License申请后获取)"
+            android:text="设备序列号 SN"
             android:textColor="#B3FFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="8dp" />
@@ -76,7 +158,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/edit_text_bg"
-            android:hint="请输入设备序列号"
+            android:hint="从阿里云eAgent平台申请"
             android:textColor="#FFFFFF"
             android:textColorHint="#4DFFFFFF"
             android:textSize="16sp"
@@ -87,7 +169,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AppKey (License申请后获取)"
+            android:text="AppKey"
             android:textColor="#B3FFFFFF"
             android:textSize="14sp"
             android:layout_marginBottom="8dp" />
@@ -97,7 +179,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/edit_text_bg"
-            android:hint="请输入 AppKey"
+            android:hint="从阿里云eAgent平台申请"
             android:textColor="#FFFFFF"
             android:textColorHint="#4DFFFFFF"
             android:textSize="16sp"
@@ -166,7 +248,17 @@
             android:layout_marginBottom="32dp"
             android:visibility="gone" />
 
-        <!-- 保存按钮 -->
+        <!-- 按钮组 -->
+        <Button
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="注册设备"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:backgroundTint="#4CAF50"
+            android:layout_marginBottom="12dp" />
+
         <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
