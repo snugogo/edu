@@ -27,9 +27,8 @@ public class LicenseManager {
     private static final String TAG = "LicenseManager";
     private static final String API_BASE_URL = "https://api.eagent.edu-aliyun.com";
     
-    // API 密钥 - 需要在阿里云 eAgent 平台申请
-    private static final String API_KEY = "YOUR_API_KEY"; // TODO: 替换为实际 API Key
-    private static final String PRODUCT_KEY = "YOUR_PRODUCT_KEY"; // TODO: 替换为产品Key
+    // License 服务器地址 - 部署你自己的后端服务
+    // private static final String LICENSE_SERVER_URL = "https://your-license-server.com";
     
     private final Context context;
     private final ConfigManager config;
