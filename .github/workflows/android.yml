@@ -42,11 +42,15 @@ jobs:
     - name: Build
       run: |
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon --info 2>&1 | tail -50
+        ./gradlew assembleDebug --no-daemon
+        
+    - name: List APK
+      run: |
+        ls -la app/build/outputs/apk/debug/
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
-      if: success()
       with:
-        name: edu-terminal
-        path: app/build/outputs/apk/debug/*.apk
+        name: edu-terminal-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 5
