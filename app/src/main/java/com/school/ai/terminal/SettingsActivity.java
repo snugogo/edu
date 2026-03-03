@@ -24,7 +24,7 @@ import com.bumptech.glide.Glide;
  */
 public class SettingsActivity extends AppCompatActivity {
 
-    private EditText etAgentId, etApiKey, etProductKey, etAppId, etSN, etAppKey, etThemeName;
+    private EditText etAgentId, etApiKey, etProductKey, etAppId, etSN, etAppKey, etThemeName, etLicenseServer;
     private TextView tvDeviceStatus, tvDeviceId;
     private ImageView ivPreview;
     private ConfigManager config;
@@ -71,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initViews() {
         etAgentId = findViewById(R.id.et_agent_id);
+        etLicenseServer = findViewById(R.id.et_license_server);
         etApiKey = findViewById(R.id.et_api_key);
         etProductKey = findViewById(R.id.et_product_key);
         etAppId = findViewById(R.id.et_app_id);
@@ -95,6 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadCurrentConfig() {
         etAgentId.setText(config.getAgentId());
+        etLicenseServer.setText(config.getLicenseServerUrl());
         etApiKey.setText(config.getApiKey());
         etProductKey.setText(config.getProductKey());
         etAppId.setText(config.getAppId());
@@ -190,6 +192,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveConfig() {
         String agentId = etAgentId.getText().toString().trim();
+        String licenseServer = etLicenseServer.getText().toString().trim();
         String appId = etAppId.getText().toString().trim();
         String sn = etSN.getText().toString().trim();
         String appKey = etAppKey.getText().toString().trim();
@@ -197,6 +200,7 @@ public class SettingsActivity extends AppCompatActivity {
         
         // 保存配置
         config.saveAgentId(agentId);
+        config.saveLicenseServerUrl(licenseServer);
         config.saveApiKey(etApiKey.getText().toString().trim());
         config.saveProductKey(etProductKey.getText().toString().trim());
         config.saveAppId(appId);

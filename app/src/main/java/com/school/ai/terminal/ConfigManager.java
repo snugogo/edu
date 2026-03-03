@@ -128,4 +128,13 @@ public class ConfigManager {
     public String getLicenseStatus() {
         return prefs.getString("license_status", "");
     }
+
+    // License 服务器地址
+    public void saveLicenseServerUrl(String url) {
+        prefs.edit().putString("license_server_url", url).apply();
+    }
+
+    public String getLicenseServerUrl() {
+        return prefs.getString("license_server_url", null);
+    }
 }

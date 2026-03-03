@@ -33,9 +33,34 @@ public class LicenseManager {
     private final Context context;
     private final ConfigManager config;
 
+    // License 服务器地址 - 可以配置自己的服务器
+    private static final String DEFAULT_LICENSE_SERVER = "http://localhost:5000";
+    
+    private String licenseServerUrl;
+    
     public LicenseManager(Context context) {
         this.context = context;
         this.config = new ConfigManager(context);
+        // 从配置获取服务器地址，如果没有配置则使用默认
+        String configuredUrl = config.getLicenseServerUrl();
+        this.licenseServerUrl = configuredUrl != null && !configuredUrl.isEmpty() 
+            ? configuredUrl 
+            : DEFAULT_LICENSE_SERVER;
+    }
+
+    /**
+     * 获取当前服务器地址
+     */
+    public String getLicenseServerUrl() {
+        return licenseServerUrl;
+    }
+
+    /**
+     * 设置服务器地址
+     */
+    public void setLicenseServerUrl(String url) {
+        this.licenseServerUrl = url;
+        config.saveLicenseServerUrl(url);
     }
 
     /**
@@ -110,7 +135,7 @@ public class LicenseManager {
             requestBody.put("deviceName", deviceName);
             requestBody.put("deviceType", "smart_terminal");
             requestBody.put("macAddress", macAddress != null ? macAddress : "00:00:00:00:00:00");
-            requestBody.put("productKey", PRODUCT_KEY);
+            requestBody.put("productKey", config.getProductKey());
             
             // 发送请求
             String response = sendRequest("/api/v1/devices/register", "POST", requestBody.toString());
@@ -211,11 +236,13 @@ public class LicenseManager {
     private String sendRequest(String endpoint, String method, String body) {
         HttpURLConnection conn = null;
         try {
-            URL url = new URL(API_BASE_URL + endpoint);
+            // 使用配置的服务器地址
+            String baseUrl = licenseServerUrl != null ? licenseServerUrl : DEFAULT_LICENSE_SERVER;
+            URL url = new URL(baseUrl + endpoint);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method);
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + config.getApiKey());
             conn.setConnectTimeout(10000);
             conn.setReadTimeout(10000);
             
