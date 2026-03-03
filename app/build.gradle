@@ -1,0 +1,35 @@
+plugins {
+    alias(libs.plugins.androidApplication)
+}
+
+android {
+    namespace 'com.school.ai.terminal'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.school.ai.terminal"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+}

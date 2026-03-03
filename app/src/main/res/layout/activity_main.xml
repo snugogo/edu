@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:keepScreenOn="true">
+
+    <!-- 背景图 -->
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.6"
+        android:src="@drawable/ic_launcher_background" />
+
+    <!-- 管理员入口触发区 -->
+    <View
+        android:id="@+id/view_admin_trigger"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 主题标题 -->
+    <TextView
+        android:id="@+id/tv_theme_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="未来科普终端"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:letterSpacing="0.2"
+        android:layout_marginTop="32dp"
+        android:shadowColor="#000000"
+        android:shadowRadius="10"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- AI 回复 -->
+    <ScrollView
+        android:id="@+id/scroll_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="64dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/tv_theme_title"
+        app:layout_constraintBottom_toTopOf="@id/wave_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tv_ai_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="待机中... 请说话"
+            android:textColor="#FFFFFF"
+            android:textSize="42sp"
+            android:lineSpacingExtra="12dp"
+            android:shadowColor="#000000"
+            android:shadowRadius="10" />
+
+    </ScrollView>
+
+    <!-- 声波纹 -->
+    <com.school.ai.terminal.WaveformView
+        android:id="@+id/wave_view"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_user_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 用户输入 -->
+    <TextView
+        android:id="@+id/tv_user_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text=""
+        android:textColor="#AAAAAA"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

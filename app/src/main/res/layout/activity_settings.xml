@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1a1a1a"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备配置"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="智能体ID (AgentCode)"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+        
+        <EditText
+            android:id="@+id/et_agent_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入智能体ID"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@android:color/darker_gray"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AppId (License)"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+        
+        <EditText
+            android:id="@+id/et_app_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入AppId"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@android:color/darker_gray"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备序列号 (SN)"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+        
+        <EditText
+            android:id="@+id/et_sn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入设备SN"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@android:color/darker_gray"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AppKey"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+        
+        <EditText
+            android:id="@+id/et_app_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入AppKey"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@android:color/darker_gray"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="显示标题"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+        
+        <EditText
+            android:id="@+id/et_theme_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="例如: 3F 人工智能实验室"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@android:color/darker_gray"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="背景图"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+        
+        <ImageView
+            android:id="@+id/iv_preview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_pick_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="选择图片"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="保存配置"
+            android:backgroundTint="#00AAFF"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_clear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="清除配置"
+            android:backgroundTint="#FF4444"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</ScrollView>
