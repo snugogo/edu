@@ -1,153 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1a1a1a"
-    android:padding="24dp">
+    android:background="#0a0a0a">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="32dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设备配置"
-            android:textColor="#FFFFFF"
+            android:text="终端配置"
+            android:textColor="#00E5FF"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="32dp" />
 
+        <!-- 智能体 ID -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="智能体ID (AgentCode)"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-        
+            android:text="智能体 ID"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
         <EditText
             android:id="@+id/et_agent_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="请输入智能体ID"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="请输入智能体 ID"
             android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@android:color/darker_gray"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
 
+        <!-- 项目 ID -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AppId (License)"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-        
+            android:text="AppId (License申请后获取)"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
         <EditText
             android:id="@+id/et_app_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="请输入AppId"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="请输入 AppId"
             android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@android:color/darker_gray"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
 
+        <!-- 设备序列号 SN -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设备序列号 (SN)"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-        
+            android:text="设备序列号 SN (License申请后获取)"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
         <EditText
             android:id="@+id/et_sn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="请输入设备SN"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="请输入设备序列号"
             android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@android:color/darker_gray"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
 
+        <!-- AppKey -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AppKey"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-        
+            android:text="AppKey (License申请后获取)"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
         <EditText
             android:id="@+id/et_app_key"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="请输入AppKey"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="请输入 AppKey"
             android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@android:color/darker_gray"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
 
+        <!-- 主题名称 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="显示标题"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-        
+            android:text="主题名称"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
         <EditText
             android:id="@+id/et_theme_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="例如: 3F 人工智能实验室"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="例如: 3F · 人工智能实验室"
             android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@android:color/darker_gray"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
+            android:textColorHint="#4DFFFFFF"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="24dp" />
 
+        <!-- 背景图 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="背景图"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-        
+            android:text="背景图片"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/btn_pick_img"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="选择图片"
+                android:textColor="#000000"
+                android:backgroundTint="#00E5FF" />
+
+            <Button
+                android:id="@+id/btn_clear_img"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:text="清除"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#333333" />
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/iv_preview"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:background="#333333"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="32dp"
+            android:visibility="gone" />
 
-        <Button
-            android:id="@+id/btn_pick_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="选择图片"
-            android:layout_marginBottom="24dp" />
-
+        <!-- 保存按钮 -->
         <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:text="保存配置"
-            android:backgroundTint="#00AAFF"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btn_clear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="清除配置"
-            android:backgroundTint="#FF4444"
-            android:textColor="#FFFFFF" />
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="#00E5FF" />
 
     </LinearLayout>
 

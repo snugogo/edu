@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                         
                         tempBgUri = uri.toString();
+                        ivPreview.setVisibility(View.VISIBLE);
                         Glide.with(this)
                             .load(uri)
                             .centerCrop()
@@ -59,7 +61,6 @@ public class SettingsActivity extends AppCompatActivity {
         
         initViews();
         loadCurrentConfig();
-        setupListeners();
     }
 
     private void initViews() {
@@ -71,12 +72,12 @@ public class SettingsActivity extends AppCompatActivity {
         ivPreview = findViewById(R.id.iv_preview);
         
         Button btnSave = findViewById(R.id.btn_save);
-        Button btnPickImage = findViewById(R.id.btn_pick_image);
-        Button btnClear = findViewById(R.id.btn_clear);
+        Button btnPickImage = findViewById(R.id.btn_pick_img);
+        Button btnClear = findViewById(R.id.btn_clear_img);
         
         btnSave.setOnClickListener(v -> saveConfig());
         btnPickImage.setOnClickListener(v -> pickImage());
-        btnClear.setOnClickListener(v -> clearConfig());
+        btnClear.setOnClickListener(v -> clearImage());
     }
 
     private void loadCurrentConfig() {
@@ -89,15 +90,12 @@ public class SettingsActivity extends AppCompatActivity {
         // 加载背景图预览
         String bgUri = config.getBgUri();
         if (bgUri != null && !bgUri.isEmpty()) {
+            ivPreview.setVisibility(View.VISIBLE);
             Glide.with(this)
                 .load(Uri.parse(bgUri))
                 .centerCrop()
                 .into(ivPreview);
         }
-    }
-
-    private void setupListeners() {
-        // 可以添加输入验证等逻辑
     }
 
     private void pickImage() {
@@ -107,6 +105,12 @@ public class SettingsActivity extends AppCompatActivity {
         pickImageLauncher.launch(intent);
     }
 
+    private void clearImage() {
+        tempBgUri = "";
+        ivPreview.setVisibility(View.GONE);
+        ivPreview.setImageDrawable(null);
+    }
+
     private void saveConfig() {
         String agentId = etAgentId.getText().toString().trim();
         String appId = etAppId.getText().toString().trim();
@@ -114,14 +118,9 @@ public class SettingsActivity extends AppCompatActivity {
         String appKey = etAppKey.getText().toString().trim();
         String themeName = etThemeName.getText().toString().trim();
         
-        // 基本验证
+        // 验证
         if (agentId.isEmpty()) {
             etAgentId.setError("请输入智能体ID");
-            return;
-        }
-        
-        if (appId.isEmpty()) {
-            etAppId.setError("请输入AppId");
             return;
         }
         
@@ -132,31 +131,12 @@ public class SettingsActivity extends AppCompatActivity {
         config.saveAppKey(appKey);
         config.saveThemeName(themeName.isEmpty() ? "未来科普终端" : themeName);
         
-        if (tempBgUri != null) {
+        if (tempBgUri != null && !tempBgUri.isEmpty()) {
             config.saveBgUri(tempBgUri);
         }
         
         Toast.makeText(this, "配置已保存，需要重启应用生效", Toast.LENGTH_LONG).show();
         
-        // 返回主界面
         finish();
-    }
-    
-    private void clearConfig() {
-        config.saveAgentId("");
-        config.saveAppId("");
-        config.saveSN("");
-        config.saveAppKey("");
-        config.saveThemeName("未来科普终端");
-        config.saveBgUri("");
-        
-        etAgentId.setText("");
-        etAppId.setText("");
-        etSN.setText("");
-        etAppKey.setText("");
-        etThemeName.setText("未来科普终端");
-        ivPreview.setImageResource(android.R.color.darker_gray);
-        
-        Toast.makeText(this, "配置已清除", Toast.LENGTH_SHORT).show();
     }
 }

@@ -21,6 +21,8 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 主界面 - 未来科普终端
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvThemeTitle;
     private TextView tvAiResponse;
     private TextView tvUserInput;
+    private TextView tvClock;
     private WaveformView waveView;
     private View viewAdminTrigger;
 
@@ -83,8 +86,27 @@ public class MainActivity extends AppCompatActivity {
         tvThemeTitle = findViewById(R.id.tv_theme_title);
         tvAiResponse = findViewById(R.id.tv_ai_response);
         tvUserInput = findViewById(R.id.tv_user_input);
+        tvClock = findViewById(R.id.tv_clock);
         waveView = findViewById(R.id.wave_view);
         viewAdminTrigger = findViewById(R.id.view_admin_trigger);
+        
+        // 启动时钟更新
+        startClock();
+    }
+
+    private void startClock() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+                    if (tvClock != null) {
+                        tvClock.setText(sdf.format(new java.util.Date()));
+                    }
+                });
+            }
+        }, 0, 1000);
     }
 
     private void setupKioskMode() {
