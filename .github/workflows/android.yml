@@ -8,49 +8,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        
-    - name: Set up Android SDK
-      run: |
-        mkdir -p $HOME/android-sdk/cmdline-tools
-        cd $HOME/android-sdk/cmdline-tools
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
-        unzip -q cmdline-tools.zip
-        mv cmdline-tools latest
-        
-    - name: Accept licenses
-      run: |
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-        
-    - name: Install SDK components
-      run: |
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-33" "build-tools;33.0.0"
-        
-    - name: Create local.properties
-      run: |
-        echo "sdk.dir=$HOME/android-sdk" > local.properties
-        
-    - name: Build
-      run: |
-        chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
-        
-    - name: List APK
-      run: |
-        ls -la app/build/outputs/apk/debug/
-        
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: edu-terminal-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 5
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          
+      - uses: amondnet/25-action-android-gradle-build@v25
+        with:
+          gradle-version: 8.2
+          android-sdk-version: '33'
+          architecture: debug
+          input-path: app/build.gradle
+          output-directory: app/build/outputs/apk/debug
+          
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/*.apk
