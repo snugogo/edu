@@ -1,11 +1,11 @@
 package com.school.ai.terminal;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -14,26 +14,32 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 /**
- * 主界面 - 未来科普终端 (UI演示版)
- * 此版本不依赖实际SDK，用于预览界面和交互
+ * 主界面 - 未来科普终端
+ * 集成阿里云灵芯 SDK
+ * 
+ * 使用说明:
+ * 1. 将阿里云灵芯 SDK (.aar) 放入 app/libs 文件夹
+ * 2. 在 build.gradle 中取消注释 implementation fileTree
+ * 3. 申请 License 后填入智能体ID
  */
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private static final int ADMIN_CLICK_THRESHOLD = 5;
     private static final int ADMIN_CLICK_TIMEOUT = 2000;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
     private ConfigManager config;
+    // private LingxinVoiceChat lingxinVoiceChat; // TODO: 取消注释并添加SDK后启用
     private Handler handler = new Handler();
     
     private int adminClickCount = 0;
@@ -44,6 +50,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvUserInput;
     private WaveformView waveView;
     private View viewAdminTrigger;
+
+    // 权限请求Launcher
+    private final ActivityResultLauncher<String[]> permissionLauncher = 
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            Boolean audioGranted = result.getOrDefault(Manifest.permission.RECORD_AUDIO, false);
+            if (audioGranted != null && audioGranted) {
+                // initLingxinSDK(); // TODO: 取消注释并添加SDK后启用
+            } else {
+                Toast.makeText(this, "录音权限被拒绝，部分功能无法使用", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
         loadConfiguration();
         setupAdminTrigger();
         
-        // 模拟启动效果
-        simulateStartup();
+        // 检查并请求权限，然后初始化SDK
+        checkPermissionsAndInit();
     }
 
     private void initViews() {
@@ -92,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         
         String bgUri = config.getBgUri();
         if (bgUri != null && !bgUri.isEmpty()) {
-            Glide.with(this).load(Uri.parse(bgUri)).centerCrop().into(ivBackground);
+            Glide.with(this).load(android.net.Uri.parse(bgUri)).centerCrop().into(ivBackground);
         }
 
         if (config.getAgentId().isEmpty()) {
@@ -109,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             if (adminClickCount >= ADMIN_CLICK_THRESHOLD) {
                 adminClickCount = 0;
                 tvUserInput.setText("");
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new android.content.Intent(this, SettingsActivity.class));
             } else {
                 handler.postDelayed(() -> {
                     adminClickCount = 0;
@@ -120,43 +137,122 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 模拟启动动画
+     * 检查权限并初始化SDK
      */
-    private void simulateStartup() {
-        tvAiResponse.setText("正在启动...");
-        
-        new Handler().postDelayed(() -> {
-            tvAiResponse.setText("系统就绪");
-            waveView.setListening(true);
-            
-            new Handler().postDelayed(() -> {
-                waveView.setListening(false);
-                tvAiResponse.setText("待机中...\n请说话或点击左上角5次进入设置");
-            }, 1500);
-        }, 1000);
+    private void checkPermissionsAndInit() {
+        if (checkPermission()) {
+            // initLingxinSDK(); // TODO: 取消注释并添加SDK后启用
+            tvAiResponse.setText("系统就绪\n请在设置中配置智能体ID");
+        } else {
+            requestAudioPermission();
+        }
+    }
+
+    private boolean checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) 
+                == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    private void requestAudioPermission() {
+        permissionLauncher.launch(new String[]{Manifest.permission.RECORD_AUDIO});
     }
 
     /**
-     * 模拟语音识别结果
+     * 初始化阿里云灵芯 SDK
+     * 
+     * TODO: 将以下代码取消注释，并确保已添加SDK依赖
      */
-    private void simulateVoiceInput(String text) {
-        tvUserInput.setText(text);
+    /*
+    private void initLingxinSDK() {
+        String agentId = config.getAgentId();
+        if (agentId == null || agentId.isEmpty()) {
+            Log.w(TAG, "AgentID 未配置，跳过SDK初始化");
+            return;
+        }
         
-        new Handler().postDelayed(() -> {
-            tvAiResponse.setText("正在思考...");
-            waveView.setSpeaking(true);
+        try {
+            // 获取SDK实例
+            lingxinVoiceChat = LingxinVoiceChat.getInstance();
             
-            new Handler().postDelayed(() -> {
-                waveView.setSpeaking(false);
-                tvAiResponse.setText("这是模拟的AI回答。\n\n在实际设备上，这里会显示\n阿里云灵芯SDK返回的回复。");
-            }, 2000);
-        }, 500);
+            // 创建配置提供者
+            InitConfigProvider configProvider = new InitConfigProvider() {
+                @Override
+                public String getAppId() {
+                    return config.getAppId();
+                }
+
+                @Override
+                public String getSN() {
+                    return config.getSN();
+                }
+
+                @Override
+                public String getAppKey() {
+                    return config.getAppKey();
+                }
+
+                @Override
+                public String getAgentCode() {
+                    return agentId;
+                }
+
+                @Override
+                public LingxinRecorder getRecorder() {
+                    return null;
+                }
+            };
+            
+            // 初始化SDK
+            lingxinVoiceChat.initVoiceChat(this, configProvider);
+            
+            Log.i(TAG, "阿里云灵芯 SDK 初始化成功");
+            tvAiResponse.setText("系统就绪\n请说\"小科小科\"唤醒");
+            
+        } catch (Exception e) {
+            Log.e(TAG, "SDK初始化失败: " + Objects.requireNonNull(e.getMessage()));
+            tvAiResponse.setText("SDK初始化失败\n" + e.getMessage());
+        }
     }
+    */
+
+    /**
+     * 唤醒语音对话
+     * TODO: 取消注释并添加SDK后启用
+     */
+    /*
+    private void wakeupVoiceChat() {
+        if (lingxinVoiceChat != null) {
+            try {
+                lingxinVoiceChat.wakeupOrTerminalVoiceChat();
+                tvAiResponse.setText("正在倾听...");
+                waveView.setSpeaking(false);
+                tvUserInput.setText("");
+            } catch (Exception e) {
+                Log.e(TAG, "唤醒失败: " + e.getMessage());
+            }
+        }
+    }
+    */
 
     @Override
     protected void onResume() {
         super.onResume();
         loadConfiguration();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // if (lingxinVoiceChat != null) {
+        //     try {
+        //         lingxinVoiceChat.destroyVoiceChat();
+        //     } catch (Exception e) {
+        //         Log.e(TAG, "销毁失败: " + e.getMessage());
+        //     }
+        // }
     }
 
     @Override

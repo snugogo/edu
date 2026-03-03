@@ -2,11 +2,9 @@ package com.school.ai.terminal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.aliyun.lingxinsdk.InitConfigProvider;
-import com.aliyun.lingxinsdk.recorder.LingxinRecorder;
 
 /**
- * 配置管理器 - 负责保存 AgentID、License 等配置
+ * 配置管理器 - 负责保存 AgentID、License、SDK配置等
  */
 public class ConfigManager {
     private static final String PREF_NAME = "SchoolAI_Config";
@@ -16,7 +14,11 @@ public class ConfigManager {
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    // 智能体ID (AgentCode)
+    // ==========================================
+    // 智能体配置
+    // ==========================================
+    
+    // 智能体ID (AgentCode) - 必填
     public void saveAgentId(String id) {
         prefs.edit().putString("agent_id", id).apply();
     }
@@ -43,7 +45,11 @@ public class ConfigManager {
         return prefs.getString("bg_uri", null);
     }
 
-    // 阿里云 AppId
+    // ==========================================
+    // 阿里云灵芯 SDK 配置 - 申请License后获取
+    // ==========================================
+    
+    // AppId
     public void saveAppId(String id) {
         prefs.edit().putString("app_id", id).apply();
     }

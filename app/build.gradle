@@ -32,4 +32,11 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+    
+    // 阿里云灵芯 SDK - 请将 aar 文件放入 app/libs 文件夹
+    // 或者取消下面一行的注释并修改为你的 SDK 路径
+    // implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    
+    // 如果你在 Android Studio 中打开项目，可以添加 SDK 模块引用:
+    // implementation project(':LINGXIN_SDK')
 }
