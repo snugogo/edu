@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>License Management - Bilingual</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+        
+        .lang-switch { position: fixed; top: 10px; right: 10px; z-index: 1000; }
+        .lang-switch button { padding: 8px 16px; background: #333; color: #fff; border: 1px solid #555; cursor: pointer; }
+        .lang-switch button.active { background: #00E5FF; color: #000; }
+        
+        .login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+        .login-box { background: #1a1a1a; padding: 40px; border-radius: 16px; width: 400px; text-align: center; border: 1px solid #333; }
+        .login-box h1 { color: #00E5FF; margin-bottom: 30px; }
+        .login-box input { width: 100%; padding: 14px; margin-bottom: 15px; background: #333; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; }
+        .login-box button { width: 100%; padding: 14px; background: #00E5FF; border: none; border-radius: 8px; color: #000; font-size: 16px; font-weight: bold; cursor: pointer; }
+        
+        .main-app { display: none; }
+        .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 40px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #00E5FF; font-size: 20px; }
+        
+        .stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; padding: 20px 40px; background: #111; }
+        .stat-card { background: #1a1a1a; border-radius: 12px; padding: 20px; border: 1px solid #333; text-align: center; }
+        .stat-card h3 { color: #888; font-size: 12px; margin-bottom: 8px; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #00E5FF; }
+        
+        .tabs { display: flex; padding: 0 40px; background: #111; border-bottom: 1px solid #333; flex-wrap: wrap; }
+        .tab { padding: 15px 20px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+        .tab.active { color: #00E5FF; border-bottom-color: #00E5FF; }
+        
+        .content { padding: 20px 40px; }
+        
+        table { width: 100%; border-collapse: collapse; background: #1a1a1a; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+        th { background: #222; color: #888; font-weight: 500; font-size: 12px; }
+        
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .btn-primary { background: #00E5FF; color: #000; }
+        .btn-success { background: #4CAF50; color: #fff; }
+        .btn-warning { background: #FF9800; color: #fff; }
+        .btn-danger { background: #f44336; color: #fff; }
+        
+        .card { background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
+        .card h3 { color: #00E5FF; margin-bottom: 15px; }
+        
+        .chart-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+        .chart-item { background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px solid #333; }
+        .chart-item h4 { color: #888; margin-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #888; margin-bottom: 6px; font-size: 13px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #333; border: 1px solid #444; border-radius: 6px; color: #fff; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal.show { display: flex; }
+        .modal-content { background: #1a1a1a; padding: 30px; border-radius: 12px; width: 600px; max-width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-content h2 { color: #00E5FF; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <button onclick="setLang('zh')" id="btnZh" class="active">中文</button>
+        <button onclick="setLang('en')" id="btnEn">EN</button>
+    </div>
+    
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1 id="loginTitle">🔐 License 后台</h1>
+            <input type="text" id="loginUsername" placeholder="用户名">
+            <input type="password" id="loginPassword" placeholder="密码">
+            <button onclick="login()" id="loginBtn">登录</button>
+            <p style="margin-top:15px;color:#666;font-size:12px" id="loginHint">管理员: admin / admin123</p>
+        </div>
+    </div>
+    
+    <div class="main-app" id="mainApp">
+        <div class="header">
+            <h1>🔐 License Management</h1>
+            <div><span id="currentUser"></span> <button class="btn btn-danger" style="padding:5px 10px;margin-left:10px" onclick="logout()">Logout</button></div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card"><h3 id="statLicenses">License</h3><div class="value" id="totalLicenses">-</div></div>
+            <div class="stat-card"><h3 id="statDevices">设备总数</h3><div class="value" id="totalDevices">-</div></div>
+            <div class="stat-card"><h3 id="statActive">已激活</h3><div class="value" id="activeDevices">-</div></div>
+            <div class="stat-card"><h3 id="statUsers">用户</h3><div class="value" id="totalUsers">-</div></div>
+            <div class="stat-card"><h3 id="statThemes">主题</h3><div class="value" id="totalThemes">-</div></div>
+            <div class="stat-card"><h3 id="statConversations">对话</h3><div class="value" id="totalConversations">-</div></div>
+            <div class="stat-card"><h3 id="statNotify">通知</h3><div class="value" id="totalNotifications">-</div></div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('devices')" id="tabDevices">设备管理</div>
+            <div class="tab" onclick="switchTab('licenses')" id="tabLicenses">License管理</div>
+            <div class="tab" onclick="switchTab('themes')" id="tabThemes">主题管理</div>
+            <div class="tab" onclick="switchTab('analysis')" id="tabAnalysis">数据分析</div>
+            <div class="tab" onclick="switchTab('notify')" id="tabNotify">紧急通知</div>
+            <div class="tab" onclick="switchTab('ota')" id="tabOta">OTA更新</div>
+            <div class="tab" onclick="switchTab('users')" id="tabUsers">用户管理</div>
+        </div>
+        
+        <div class="content">
+            <div id="devicesTab">
+                <button class="btn btn-success" onclick="showBindThemeModal()">绑定主题</button>
+                <table><thead><tr><th>MAC</th><th>名称</th><th>主题</th><th>智能体</th><th>状态</th></tr></thead><tbody id="devicesTable"></tbody></table>
+            </div>
+            
+            <div id="licensesTab" style="display:none;">
+                <div class="card">
+                    <h3>📝 批量创建License</h3>
+                    <div class="form-group">
+                        <label>前缀</label>
+                        <input type="text" id="licPrefix" placeholder="如: SCHOOL-AI-">
+                    </div>
+                    <div class="form-group">
+                        <label>数量</label>
+                        <input type="number" id="licCount" value="10" min="1" max="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Key</label>
+                        <input type="text" id="licProductKey" value="pk_school_ai">
+                    </div>
+                    <button class="btn btn-primary" onclick="createLicenses()">生成License</button>
+                </div>
+                
+                <div class="card">
+                    <h3>📥 批量导入License</h3>
+                    <div class="form-group">
+                        <label>License Keys (每行一个)</label>
+                        <textarea id="licKeysImport" rows="5" placeholder="LICENSE-001&#10;LICENSE-002&#10;LICENSE-003"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="importLicenses()">导入</button>
+                </div>
+                
+                <div class="stat-card" style="margin-bottom:20px;display:inline-block;margin-right:10px;">
+                    <h3>总License</h3><div class="value" id="totalLicenses">-</div>
+                </div>
+                <div class="stat-card" style="margin-bottom:20px;display:inline-block;margin-right:10px;">
+                    <h3>已绑定</h3><div class="value" id="boundLicenses">-</div>
+                </div>
+                <div class="stat-card" style="margin-bottom:20px;display:inline-block;">
+                    <h3>未使用</h3><div class="value" id="unusedLicenses">-</div>
+                </div>
+                
+                <table>
+                    <thead><tr><th>License Key</th><th>设备ID</th><th>SN</th><th>状态</th><th>绑定时间</th></tr></thead>
+                    <tbody id="licensesTable"></tbody>
+                </table>
+            </div>
+            
+            <div id="themesTab" style="display:none;">
+                <button class="btn btn-success" onclick="showThemeModal()">+ 新建主题</button>
+                <div id="themesList" style="margin-top:20px"></div>
+            </div>
+            
+            <div id="analysisTab" style="display:none;">
+                <div class="card">
+                    <h3>📊 数据筛选</h3>
+                    <div class="form-group">
+                        <label>日期范围</label>
+                        <input type="date" id="startDate"> ~ <input type="date" id="endDate">
+                    </div>
+                    <button class="btn btn-primary" onclick="loadAnalysis()">查询</button>
+                </div>
+                
+                <div class="chart-grid">
+                    <div class="chart-item">
+                        <h4>🔥 热门问题 Top 10</h4>
+                        <div id="hotQuestions"></div>
+                    </div>
+                    <div class="chart-item">
+                        <h4>📈 每日趋势</h4>
+                        <div id="dailyTrend"></div>
+                    </div>
+                    <div class="chart-item">
+                        <h4>⏰ 时段分布</h4>
+                        <div id="hourlyDist"></div>
+                    </div>
+                    <div class="chart-item">
+                        <h4>🔑 关键词</h4>
+                        <div id="keywords"></div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top:20px">
+                    <h3>📋 对话记录</h3>
+                    <table><thead><tr><th>时间</th><th>用户问题</th><th>AI回复</th></tr></thead><tbody id="conversationsTable"></tbody></table>
+                </div>
+            </div>
+            
+            <div id="notifyTab" style="display:none;">
+                <div class="card">
+                    <h3>📢 发送紧急通知</h3>
+                    <div class="form-group"><label>标题 (中文)</label><input type="text" id="notifyTitle"></div>
+                    <div class="form-group"><label>Title (English)</label><input type="text" id="notifyTitleEn"></div>
+                    <div class="form-group"><label>内容 (中文)</label><textarea id="notifyContent" rows="3"></textarea></div>
+                    <div class="form-group"><label>Content (English)</label><textarea id="notifyContentEn" rows="3"></textarea></div>
+                    <div class="form-group"><label>优先级</label><select id="notifyPriority"><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select></div>
+                    <button class="btn btn-warning" onclick="sendNotification()">发送通知</button>
+                </div>
+                <div id="notificationsList"></div>
+            </div>
+            
+            <div id="otaTab" style="display:none;">
+                <div class="card">
+                    <h3>📱 发布新版本</h3>
+                    <div class="form-group"><label>版本号</label><input type="number" id="otaVersionCode" value="2"></div>
+                    <div class="form-group"><label>版本名称</label><input type="text" id="otaVersionName" placeholder="v1.2"></div>
+                    <div class="form-group"><label>描述 (中文)</label><textarea id="otaDesc"></textarea></div>
+                    <div class="form-group"><label>Description (EN)</label><textarea id="otaDescEn"></textarea></div>
+                    <div class="form-group"><label>下载链接</label><input type="text" id="otaUrl" placeholder="https://..."></div>
+                    <label><input type="checkbox" id="otaForce"> 强制更新</label>
+                    <button class="btn btn-success" onclick="createOta()" style="margin-top:10px;display:block;width:100%">发布</button>
+                </div>
+            </div>
+            
+            <div id="usersTab" style="display:none;">
+                <button class="btn btn-success" onclick="showUserModal()">+ 添加用户</button>
+                <table><thead><tr><th>用户名</th><th>邮箱</th><th>角色</th><th>语言</th></tr></thead><tbody id="usersTable"></tbody></table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentUser = null;
+        let lang = 'zh';
+        
+        const texts = {
+            zh: {
+                loginTitle: '🔐 License 后台',
+                loginBtn: '登录',
+                loginHint: '管理员: admin / admin123',
+                statDevices: '设备总数', statActive: '已激活', statUsers: '用户',
+                statThemes: '主题', statConversations: '对话', statNotify: '通知',
+                tabDevices: '设备管理', tabLicenses: 'License管理', tabThemes: '主题管理', tabAnalysis: '数据分析',
+                tabNotify: '紧急通知', tabOta: 'OTA更新', tabUsers: '用户管理',
+                hotQuestions: '热门问题', dailyTrend: '每日趋势', hourlyDist: '时段分布', keywords: '关键词'
+            },
+            en: {
+                loginTitle: '🔐 License Admin',
+                loginBtn: 'Login',
+                loginHint: 'Admin: admin / admin123',
+                statDevices: 'Devices', statActive: 'Active', statUsers: 'Users',
+                statThemes: 'Themes', statConversations: 'Chats', statNotify: 'Notify',
+                tabDevices: 'Devices', tabLicenses: 'Licenses', tabThemes: 'Themes', tabAnalysis: 'Analysis',
+                tabNotify: 'Notify', tabOta: 'OTA', tabUsers: 'Users',
+                hotQuestions: 'Hot Questions', dailyTrend: 'Daily Trend', hourlyDist: 'Hourly Dist', keywords: 'Keywords'
+            }
+        };
+        
+        function setLang(l) {
+            lang = l;
+            document.getElementById('btnZh').className = l === 'zh' ? 'active' : '';
+            document.getElementById('btnEn').className = l === 'en' ? 'active' : '';
+            
+            const t = texts[l];
+            document.getElementById('loginTitle').textContent = t.loginTitle;
+            document.getElementById('loginBtn').textContent = t.loginBtn;
+            document.getElementById('loginHint').textContent = t.loginHint;
+            document.getElementById('statDevices').textContent = t.statDevices;
+            document.getElementById('statActive').textContent = t.statActive;
+            document.getElementById('statUsers').textContent = t.statUsers;
+            document.getElementById('statThemes').textContent = t.statThemes;
+            document.getElementById('statConversations').textContent = t.statConversations;
+            document.getElementById('statNotify').textContent = t.statNotify;
+            document.getElementById('tabDevices').textContent = t.tabDevices;
+            document.getElementById('tabThemes').textContent = t.tabThemes;
+            document.getElementById('tabAnalysis').textContent = t.tabAnalysis;
+            document.getElementById('tabNotify').textContent = t.tabNotify;
+            document.getElementById('tabOta').textContent = t.tabOta;
+            document.getElementById('tabUsers').textContent = t.tabUsers;
+        }
+        
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const res = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            }).then(r => r.json());
+            
+            if (res.code === 200) {
+                currentUser = res.data;
+                lang = res.data.language || 'zh';
+                setLang(lang);
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                document.getElementById('currentUser').textContent = res.data.username + ' (' + res.data.role + ')';
+                loadStats();
+            } else {
+                alert('Login failed: ' + res.message);
+            }
+        }
+        
+        function logout() { location.reload(); }
+        
+        async function loadStats() {
+            // Load license count
+            const licRes = await fetch('/api/v1/licenses').then(r => r.json());
+            if (licRes.code === 200) {
+                document.getElementById('totalLicenses').textContent = licRes.data.length;
+            }
+            
+            const res = await fetch('/api/v1/statistics').then(r => r.json());
+            if (res.code === 200) {
+                document.getElementById('totalDevices').textContent = res.data.devices.total;
+                document.getElementById('activeDevices').textContent = res.data.devices.active;
+                document.getElementById('totalUsers').textContent = res.data.users.total;
+                document.getElementById('totalThemes').textContent = res.data.themes.total;
+                document.getElementById('totalConversations').textContent = res.data.conversations.total;
+                document.getElementById('totalNotifications').textContent = res.data.notifications.total;
+            }
+        }
+        
+        async function loadDevices() {
+            const res = await fetch('/api/v1/devices').then(r => r.json());
+            if (res.code === 200) {
+                document.getElementById('devicesTable').innerHTML = res.data.map(d => 
+                    `<tr><td><code>${d.mac_address||'-'}</td><td>${d.device_name||'-'}</td><td>${lang==='en'&&d.theme_name_en?d.theme_name_en:d.theme_name||'-'}</td><td>${lang==='en'&&d.agent_name_en?d.agent_name_en:d.agent_name||'-'}</td><td>${d.status}</td></tr>`
+                ).join('');
+            }
+        }
+        
+        async function loadAnalysis() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            let url = '/api/v1/conversations/analyze?';
+            if (startDate) url += 'startDate=' + startDate + '&';
+            if (endDate) url += 'endDate=' + endDate;
+            
+            const res = await fetch(url).then(r => r.json());
+            if (res.code === 200) {
+                const d = res.data;
+                document.getElementById('hotQuestions').innerHTML = d.hotQuestions.map((q, i) => 
+                    `<p>${i+1}. ${q.user_query} (${q.count})</p>`
+                ).join('');
+                
+                document.getElementById('dailyTrend').innerHTML = d.dailyTrend.map(t => 
+                    `<p>${t.date}: ${t.count}</p>`
+                ).join('');
+                
+                document.getElementById('hourlyDist').innerHTML = d.hourlyDistribution.map(h => 
+                    `<p>${h.hour}:00 - ${h.count}</p>`
+                ).join('');
+                
+                document.getElementById('keywords').innerHTML = d.topKeywords.map(k => 
+                    `<span style="background:#333;padding:3px 8px;margin:2px;border-radius:4px;display:inline-block">${k.keyword} (${k.count})</span>`
+                ).join('');
+            }
+            
+            // Load conversations
+            const cRes = await fetch('/api/v1/conversations?size=20').then(r => r.json());
+            if (cRes.code === 200) {
+                document.getElementById('conversationsTable').innerHTML = cRes.data.list.map(c => 
+                    `<tr><td>${new Date(c.created_at).toLocaleString()}</td><td>${c.user_query||'-'}</td><td>${(c.ai_response||'').substring(0,50)}...</td></tr>`
+                ).join('');
+            }
+        }
+        
+        async function sendNotification() {
+            const data = {
+                title: document.getElementById('notifyTitle').value,
+                titleEn: document.getElementById('notifyTitleEn').value,
+                content: document.getElementById('notifyContent').value,
+                contentEn: document.getElementById('notifyContentEn').value,
+                priority: document.getElementById('notifyPriority').value,
+                createdBy: currentUser.userId
+            };
+            
+            const res = await fetch('/api/v1/notifications', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(r => r.json());
+            
+            alert(res.code === 200 ? (lang==='zh'?'发送成功':'Sent!') : 'Failed');
+            loadNotifications();
+        }
+        
+        async function loadNotifications() {
+            const res = await fetch('/api/v1/notifications').then(r => r.json());
+            if (res.code === 200) {
+                document.getElementById('notificationsList').innerHTML = res.data.map(n => 
+                    `<div class="card"><h3>${lang==='zh'?n.title:n.title_en}</h3><p>${lang==='zh'?n.content:n.content_en}</p><button class="btn btn-danger" onclick="deleteNotify(${n.id})">Delete</button></div>`
+                ).join('');
+            }
+        }
+        
+        async function deleteNotify(id) {
+            await fetch('/api/v1/notifications/' + id, {method: 'DELETE'});
+            loadNotifications();
+        }
+        
+        async function createOta() {
+            const data = {
+                versionCode: parseInt(document.getElementById('otaVersionCode').value),
+                versionName: document.getElementById('otaVersionName').value,
+                description: document.getElementById('otaDesc').value,
+                descriptionEn: document.getElementById('otaDescEn').value,
+                downloadUrl: document.getElementById('otaUrl').value,
+                forceUpdate: document.getElementById('otaForce').checked ? 1 : 0
+            };
+            
+            const res = await fetch('/api/v1/ota/versions', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(r => r.json());
+            
+            alert(res.code === 200 ? (lang==='zh'?'发布成功':'Published!') : 'Failed');
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            ['devices','licenses','themes','analysis','notify','ota','users'].forEach(t => 
+                document.getElementById(t+'Tab').style.display = t===tab?'block':'none');
+            if (tab==='devices') loadDevices();
+            if (tab==='licenses') loadLicenses();
+            if (tab==='analysis') loadAnalysis();
+            if (tab==='notify') loadNotifications();
+        }
+        
+        // ==================== License Functions ====================
+        async function loadLicenses() {
+            const res = await fetch('/api/v1/licenses').then(r => r.json());
+            if (res.code === 200) {
+                const licenses = res.data;
+                let total = licenses.length, bound = 0, unused = 0;
+                licenses.forEach(l => {
+                    if (l.status === 'active') bound++;
+                    else unused++;
+                });
+                document.getElementById('totalLicenses').textContent = total;
+                document.getElementById('boundLicenses').textContent = bound;
+                document.getElementById('unusedLicenses').textContent = unused;
+                
+                const tbody = document.getElementById('licensesTable');
+                tbody.innerHTML = licenses.map(l => `
+                    <tr>
+                        <td>${l.license_key}</td>
+                        <td>${l.device_id || '-'}</td>
+                        <td>${l.sn || '-'}</td>
+                        <td><span style="color:${l.status==='active'?'#4CAF50':'#FF9800'}">${l.status}</span></td>
+                        <td>${l.bound_at || '-'}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        async function createLicenses() {
+            const prefix = document.getElementById('licPrefix').value;
+            const count = parseInt(document.getElementById('licCount').value);
+            const product_key = document.getElementById('licProductKey').value;
+            
+            if (!prefix) { alert(lang==='zh'?'请输入前缀':'Please enter prefix'); return; }
+            
+            const res = await fetch('/api/v1/licenses', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({license_key: prefix, count: count, product_key: product_key})
+            }).then(r => r.json());
+            
+            alert(res.message);
+            if (res.code === 200) loadLicenses();
+        }
+        
+        async function importLicenses() {
+            const keysText = document.getElementById('licKeysImport').value;
+            const keys = keysText.split('\n').map(k => k.trim()).filter(k => k);
+            
+            if (keys.length === 0) { alert(lang==='zh'?'请输入License keys':'Please enter License keys'); return; }
+            
+            const res = await fetch('/api/v1/licenses/batch', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({keys: keys})
+            }).then(r => r.json());
+            
+            alert(res.message);
+            if (res.code === 200) loadLicenses();
+        }
+    </script>
+</body>
+</html>

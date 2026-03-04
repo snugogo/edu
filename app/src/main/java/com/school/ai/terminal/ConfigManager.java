@@ -137,4 +137,26 @@ public class ConfigManager {
     public String getLicenseServerUrl() {
         return prefs.getString("license_server_url", null);
     }
+
+    // ==========================================
+    // 语言设置
+    // ==========================================
+    
+    // 语言设置 (zh/en)
+    public void saveLanguage(String language) {
+        prefs.edit().putString("language", language).apply();
+    }
+
+    public String getLanguage() {
+        return prefs.getString("language", "zh");
+    }
+
+    // 英文主题名称
+    public void saveThemeNameEn(String name) {
+        prefs.edit().putString("theme_name_en", name).apply();
+    }
+
+    public String getThemeNameEn() {
+        return prefs.getString("theme_name_en", "");
+    }
 }
