@@ -781,6 +781,102 @@ def get_statistics():
         'materials': {'total': total_materials}
     }})
 
+# ==================== ASR Probe ====================
+# WO-AUDIO-PROBE-v1: Minimal ASR proxy endpoint for on-device diagnostics.
+# Receives audio from the Android probe APK, forwards to OpenAI gpt-4o-mini-transcribe.
+# No auth, no session — this is a diagnostic probe, not a product endpoint.
+
+import tempfile
+import time
+
+@app.route('/asr-probe', methods=['POST', 'OPTIONS'])
+def asr_probe():
+    # CORS preflight
+    if request.method == 'OPTIONS':
+        resp = app.make_default_options_response()
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return resp
+
+    t0 = time.time()
+
+    # Validate audio file presence
+    if 'audio' not in request.files:
+        return jsonify({
+            'transcript': None,
+            'latencyMs': 0,
+            'provider': 'openai/gpt-4o-mini-transcribe',
+            'error': 'No audio file in request (field name must be "audio")'
+        }), 400
+
+    audio_file = request.files['audio']
+    if audio_file.filename == '':
+        return jsonify({
+            'transcript': None,
+            'latencyMs': 0,
+            'provider': 'openai/gpt-4o-mini-transcribe',
+            'error': 'Empty audio file'
+        }), 400
+
+    # Read language parameter (defaults to 'pl' for Polish launch market)
+    language = request.form.get('language', 'pl')
+
+    # Check for API key
+    api_key = os.environ.get('OPENAI_API_KEY')
+    if not api_key:
+        return jsonify({
+            'transcript': None,
+            'latencyMs': int((time.time() - t0) * 1000),
+            'provider': 'openai/gpt-4o-mini-transcribe',
+            'error': 'OPENAI_API_KEY not configured on server'
+        }), 500
+
+    # Save uploaded audio to temp file and forward to OpenAI
+    tmp_path = None
+    try:
+        suffix = os.path.splitext(audio_file.filename)[1] or '.webm'
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            audio_file.save(tmp)
+            tmp_path = tmp.name
+
+        from openai import OpenAI
+        client = OpenAI(api_key=api_key)
+
+        with open(tmp_path, 'rb') as f:
+            transcription = client.audio.transcriptions.create(
+                model='gpt-4o-mini-transcribe',
+                file=f,
+                language=language,
+                response_format='json'
+            )
+
+        latency_ms = int((time.time() - t0) * 1000)
+        return jsonify({
+            'transcript': transcription.text,
+            'latencyMs': latency_ms,
+            'provider': 'openai/gpt-4o-mini-transcribe',
+            'language': language,
+            'error': None
+        })
+
+    except Exception as e:
+        latency_ms = int((time.time() - t0) * 1000)
+        return jsonify({
+            'transcript': None,
+            'latencyMs': latency_ms,
+            'provider': 'openai/gpt-4o-mini-transcribe',
+            'language': language,
+            'error': str(e)
+        }), 500
+
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({'status': 'ok', 'timestamp': datetime.datetime.now().isoformat()})

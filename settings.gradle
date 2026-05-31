@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "EduTerminal"
 include ':app'
+include ':audio-probe'

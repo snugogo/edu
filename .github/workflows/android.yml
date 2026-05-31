@@ -21,13 +21,23 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
         
-      - name: Build with Gradle
+      - name: Build Edu Terminal APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew :app:assembleDebug --no-daemon
           
-      - name: Upload APK
+      - name: Upload Edu Terminal APK
         uses: actions/upload-artifact@v4
         with:
           name: edu-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Build Audio Probe APK
+        run: |
+          ./gradlew :audio-probe:assembleDebug --no-daemon
+          
+      - name: Upload Audio Probe APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: audio-probe-apk
+          path: audio-probe/build/outputs/apk/debug/audio-probe-debug.apk
