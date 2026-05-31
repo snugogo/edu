@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "AudioProbe"
         private const val PERMISSION_REQUEST_CODE = 2001
         // Default VPS endpoint — configurable at runtime via JS bridge
-        private const val DEFAULT_SERVER_URL = "https://eagent.edu-aliyun.com"
+        private const val DEFAULT_SERVER_URL = "https://tv.bvtuber.com/asr-probe-ab75e14a101c8779"
     }
 
     private lateinit var webView: WebView
